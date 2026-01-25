@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "request_id": "29424e9b-3edb-4390-8e9f-fe1669ff71c8",
+    "timestamp": "2026-01-25T12:34:48.059054",
+    "model": "mistral",
+    "pipeline": "analysis \u2192 fuzzy \u2192 decision"
+  },
+  "input": {
+    "query": "Show me the demand trend",
+    "context_used": true
+  },
+  "analysis_agent": {
+    "summary": {
+      "rating_mean": 4.8,
+      "rating_trend": "decreasing",
+      "volatility": 0.15
+    },
+    "confidence": 0.0
+  },
+  "fuzzy_prediction_agent": {
+    "inputs": {
+      "rating": 4.8,
+      "volatility": 0.0
+    },
+    "fuzzy_state": "HIGH",
+    "predicted_score": 0.0
+  },
+  "decision_agent": {
+    "decision": "REVIEW",
+    "reasoning": "Based on the provided data, the predicted order flow level is HIGH and customer rating trend is decreasing. According to the retrieved context, when demand is high (as it is in this case) and ratings are good, inventory should be increased. However, since the customer rating trend is decreasing, it's recommended to monitor the situation closely as a potential drop in customer satisfaction might impact future orders.",
+    "supporting_docs": [
+      "If demand is high and ratings are good, increase inventory.",
+      "If demand is medium, maintain current inventory."
+    ]
+  },
+  "final_output": {
+    "text": "Based on the provided data, the predicted order flow level is HIGH and customer rating trend is decreasing. According to the retrieved context, when demand is high (as it is in this case) and ratings are good, inventory should be increased. However, since the customer rating trend is decreasing, it's recommended to monitor the situation closely as a potential drop in customer satisfaction might impact future orders.",
+    "actionable_steps": []
+  }
+}

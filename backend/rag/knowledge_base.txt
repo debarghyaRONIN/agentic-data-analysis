@@ -1,0 +1,4 @@
+If demand is high and ratings are good, increase inventory.
+If demand is medium, maintain current inventory.
+If demand is low, reduce inventory and focus on marketing.
+Historical trend shows inventory increase worked well in high-demand periods.

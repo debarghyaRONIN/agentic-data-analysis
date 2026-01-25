@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "request_id": "daafe709-791d-4d5f-99bc-1fbddff94321",
+    "timestamp": "2026-01-25T12:33:12.619459",
+    "model": "mistral",
+    "pipeline": "analysis \u2192 fuzzy \u2192 decision"
+  },
+  "input": {
+    "query": "Show me the demand trend",
+    "context_used": true
+  },
+  "analysis_agent": {
+    "summary": {
+      "rating_mean": 3.5,
+      "rating_trend": "decreasing",
+      "volatility": 0.62
+    },
+    "confidence": 0.0
+  },
+  "fuzzy_prediction_agent": {
+    "inputs": {
+      "rating": 3.5,
+      "volatility": 0.0
+    },
+    "fuzzy_state": "LOW",
+    "predicted_score": 0.0
+  },
+  "decision_agent": {
+    "decision": "REVIEW",
+    "reasoning": "Based on the provided data, the predicted order flow level is LOW and the customer rating trend is decreasing. This suggests a downward demand trend.",
+    "supporting_docs": [
+      "If demand is high and ratings are good, increase inventory.",
+      "If demand is low, reduce inventory and focus on marketing."
+    ]
+  },
+  "final_output": {
+    "text": "Based on the provided data, the predicted order flow level is LOW and the customer rating trend is decreasing. This suggests a downward demand trend.",
+    "actionable_steps": []
+  }
+}

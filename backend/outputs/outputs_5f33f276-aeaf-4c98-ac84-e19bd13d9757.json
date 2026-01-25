@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "request_id": "5f33f276-aeaf-4c98-ac84-e19bd13d9757",
+    "timestamp": "2026-01-25T15:19:02.023211",
+    "model": "mistral",
+    "pipeline": "analysis \u2192 fuzzy \u2192 decision"
+  },
+  "input": {
+    "query": "Should I increase inventory?",
+    "context_used": true
+  },
+  "analysis_agent": {
+    "summary": {
+      "rating_mean": 4.8,
+      "rating_trend": "decreasing",
+      "volatility": 0.15
+    },
+    "confidence": 0.0
+  },
+  "fuzzy_prediction_agent": {
+    "inputs": {
+      "rating": 4.8,
+      "volatility": 0.0
+    },
+    "fuzzy_state": "HIGH",
+    "predicted_score": 0.0
+  },
+  "decision_agent": {
+    "decision": "REVIEW",
+    "reasoning": "Based on the provided data, it seems there's a high predicted order flow (255.43) and a decreasing customer rating trend. The rules suggest that if demand is high but ratings are poor, you should carefully consider inventory adjustments rather than automatically increasing it. Therefore, I would recommend reviewing the reasons behind the decreasing customer ratings before making a decision about inventory levels.",
+    "supporting_docs": [
+      "If demand is high and ratings are good, increase inventory.",
+      "If demand is medium, maintain current inventory."
+    ]
+  },
+  "final_output": {
+    "text": "Based on the provided data, it seems there's a high predicted order flow (255.43) and a decreasing customer rating trend. The rules suggest that if demand is high but ratings are poor, you should carefully consider inventory adjustments rather than automatically increasing it. Therefore, I would recommend reviewing the reasons behind the decreasing customer ratings before making a decision about inventory levels.",
+    "actionable_steps": []
+  }
+}

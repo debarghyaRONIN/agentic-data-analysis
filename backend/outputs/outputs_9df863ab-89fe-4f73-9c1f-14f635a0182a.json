@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "request_id": "9df863ab-89fe-4f73-9c1f-14f635a0182a",
+    "timestamp": "2026-01-25T12:32:58.624753",
+    "model": "mistral",
+    "pipeline": "analysis \u2192 fuzzy \u2192 decision"
+  },
+  "input": {
+    "query": "Show me the overall trends",
+    "context_used": true
+  },
+  "analysis_agent": {
+    "summary": {
+      "rating_mean": 3.5,
+      "rating_trend": "decreasing",
+      "volatility": 0.62
+    },
+    "confidence": 0.0
+  },
+  "fuzzy_prediction_agent": {
+    "inputs": {
+      "rating": 3.5,
+      "volatility": 0.0
+    },
+    "fuzzy_state": "LOW",
+    "predicted_score": 0.0
+  },
+  "decision_agent": {
+    "decision": "REVIEW",
+    "reasoning": "Based on the provided data, the overall trends indicate a decreasing customer rating and a predicted low order flow. This suggests a potential decrease in demand or customer satisfaction. It might be beneficial to focus on improving customer service or products to increase ratings, and consider marketing efforts to stimulate demand.",
+    "supporting_docs": [
+      "If demand is high and ratings are good, increase inventory.",
+      "If demand is low, reduce inventory and focus on marketing."
+    ]
+  },
+  "final_output": {
+    "text": "Based on the provided data, the overall trends indicate a decreasing customer rating and a predicted low order flow. This suggests a potential decrease in demand or customer satisfaction. It might be beneficial to focus on improving customer service or products to increase ratings, and consider marketing efforts to stimulate demand.",
+    "actionable_steps": []
+  }
+}
