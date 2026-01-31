@@ -95,7 +95,7 @@ def chat(payload: dict):
 
         if not user_question:
             return {"reply": "Please ask a valid question."}
-
+        
         # Analysis Agent
         summary, charts, df = analysis_agent.analyze()
         summary = sanitize_dict(summary)
@@ -130,11 +130,13 @@ def chat(payload: dict):
 
         # JSON TEMPLATE (NEW, NON-BREAKING)
         json_template = build_agent_json(
-            query=user_question,
-            analysis_summary=summary,
-            fuzzy_output=fuzzy,
-            rag_context=rag_context,
-            llm_text=llm_text
+           query=user_question,
+           analysis_summary=summary,
+           fuzzy_output=fuzzy,
+           rag_context=rag_context,
+           llm_text=llm_text,
+           charts=charts,
+           fuzzy_charts=fuzzy_chart
         )
 
         # save JSON output for Flutter / audit
