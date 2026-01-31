@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "request_id": "3386faf5-1cf2-43e0-b680-63f0b0b41618",
+    "timestamp": "2026-01-31T15:19:48.304910",
+    "model": "mistral",
+    "pipeline": "analysis \u2192 fuzzy \u2192 decision"
+  },
+  "input": {
+    "query": "What is happening with my business?",
+    "context_used": true
+  },
+  "analysis_agent": {
+    "summary": {
+      "rating_mean": 4.8,
+      "rating_trend": "decreasing",
+      "volatility": 0.15
+    },
+    "confidence": 0.0
+  },
+  "fuzzy_prediction_agent": {
+    "inputs": {
+      "rating": 4.8,
+      "volatility": 0.0
+    },
+    "fuzzy_state": "HIGH",
+    "predicted_score": 0.0
+  },
+  "decision_agent": {
+    "decision": "REVIEW",
+    "reasoning": "Based on the provided data, your business currently has a decreasing customer rating trend and a high predicted order flow. According to the retrieved context, if demand is high but ratings are decreasing, it might be necessary to investigate the reasons for the decrease in customer satisfaction and address any issues found. However, since the average customer rating is still relatively high (4.8), it's essential to consider both factors before making a decision about inventory management.",
+    "supporting_docs": [
+      "If demand is high and ratings are good, increase inventory.",
+      "If demand is medium, maintain current inventory."
+    ]
+  },
+  "final_output": {
+    "text": "Based on the provided data, your business currently has a decreasing customer rating trend and a high predicted order flow. According to the retrieved context, if demand is high but ratings are decreasing, it might be necessary to investigate the reasons for the decrease in customer satisfaction and address any issues found. However, since the average customer rating is still relatively high (4.8), it's essential to consider both factors before making a decision about inventory management.",
+    "actionable_steps": []
+  }
+}

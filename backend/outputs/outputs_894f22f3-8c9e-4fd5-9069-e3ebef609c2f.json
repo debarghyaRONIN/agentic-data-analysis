@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "request_id": "894f22f3-8c9e-4fd5-9069-e3ebef609c2f",
+    "timestamp": "2026-01-26T15:21:02.820568",
+    "model": "mistral",
+    "pipeline": "analysis \u2192 fuzzy \u2192 decision"
+  },
+  "input": {
+    "query": "Predicted order flow",
+    "context_used": true
+  },
+  "analysis_agent": {
+    "summary": {
+      "rating_mean": 4.8,
+      "rating_trend": "decreasing",
+      "volatility": 0.15
+    },
+    "confidence": 0.0
+  },
+  "fuzzy_prediction_agent": {
+    "inputs": {
+      "rating": 4.8,
+      "volatility": 0.0
+    },
+    "fuzzy_state": "HIGH",
+    "predicted_score": 0.0
+  },
+  "decision_agent": {
+    "decision": "REVIEW",
+    "reasoning": "Based on the provided data, the predicted order flow is HIGH (255.43). However, the customer rating trend is decreasing. According to the given rules, if demand is high but ratings are poor, it might be advisable to review inventory levels and consider strategies to improve customer satisfaction.",
+    "supporting_docs": [
+      "If demand is high and ratings are good, increase inventory.",
+      "If demand is medium, maintain current inventory."
+    ]
+  },
+  "final_output": {
+    "text": "Based on the provided data, the predicted order flow is HIGH (255.43). However, the customer rating trend is decreasing. According to the given rules, if demand is high but ratings are poor, it might be advisable to review inventory levels and consider strategies to improve customer satisfaction.",
+    "actionable_steps": []
+  }
+}

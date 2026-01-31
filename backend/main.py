@@ -111,8 +111,10 @@ def chat(payload: dict):
         # Fuzzy Logic Agent
         fuzzy = fuzzy_agent.predict(
             rating=float(latest["rating"]),
-            volatility=float(volatility_value)
+            volatility=float(volatility_value),
         )
+
+        fuzzy_chart = fuzzy_agent.get_membership_charts()
 
         # Decision Agent (RAG + LLM)
         rag_context = decision_agent.retrieve_context(
@@ -147,7 +149,9 @@ def chat(payload: dict):
             "reply": llm_text,            
             "charts": charts,
             "prediction": fuzzy,
-            "json_template": json_template  
+            "fuzzy_chart": fuzzy_chart,
+            "json_template": json_template,
+            "defuzz_value": fuzzy["predicted_order_flow"],  
         }
 
     except Exception as e:

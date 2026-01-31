@@ -132,7 +132,12 @@ export default function ChatChart({
   };
 
   return (
-    <div style={{ width: "100%", height: 320, marginBottom: 24 }}>
+    <div style={{
+width: "100%",
+height: 320,
+minHeight: 320,
+marginBottom: 24
+}}>
       {/* Title + Dropdown */}
       <div
         style={{

@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "request_id": "e13569e5-8276-437f-ac49-baf723653923",
+    "timestamp": "2026-01-26T14:49:04.774722",
+    "model": "mistral",
+    "pipeline": "analysis \u2192 fuzzy \u2192 decision"
+  },
+  "input": {
+    "query": "Show me the overall trends",
+    "context_used": true
+  },
+  "analysis_agent": {
+    "summary": {
+      "rating_mean": 4.8,
+      "rating_trend": "decreasing",
+      "volatility": 0.15
+    },
+    "confidence": 0.0
+  },
+  "fuzzy_prediction_agent": {
+    "inputs": {
+      "rating": 4.8,
+      "volatility": 0.0
+    },
+    "fuzzy_state": "HIGH",
+    "predicted_score": 0.0
+  },
+  "decision_agent": {
+    "decision": "REVIEW",
+    "reasoning": "The overall trends show a decreasing customer rating and a high predicted order flow. According to the provided context, when demand is high (as it is in this case) and ratings are good (although they are currently decreasing), the recommended action is not to increase inventory but to maintain current inventory levels.",
+    "supporting_docs": [
+      "If demand is high and ratings are good, increase inventory.",
+      "If demand is medium, maintain current inventory."
+    ]
+  },
+  "final_output": {
+    "text": "The overall trends show a decreasing customer rating and a high predicted order flow. According to the provided context, when demand is high (as it is in this case) and ratings are good (although they are currently decreasing), the recommended action is not to increase inventory but to maintain current inventory levels.",
+    "actionable_steps": []
+  }
+}

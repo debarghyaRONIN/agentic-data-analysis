@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { uploadDataset } from "../api";
 import ChatCharts from "./ChatCharts";
-
+import FuzzyChart from "./FuzzyChart";
+import DefuzzChart from "./DefuzzChart";
 const API_URL = "http://127.0.0.1:8000";
 
 export default function Chat() {
@@ -30,8 +31,9 @@ export default function Chat() {
     "Explain the decision in simple terms"
   ];
 
-
+  // ===============================
   // AUTO SCROLL
+  // ===============================
   useEffect(() => {
     chatBoxRef.current?.scrollTo({
       top: chatBoxRef.current.scrollHeight,
@@ -39,12 +41,11 @@ export default function Chat() {
     });
   }, [messages]);
 
-
-  // SEND MESSAGE (ONLY AFTER UPLOAD)
-
+  // ===============================
+  // SEND MESSAGE (TEXT ONLY)
+  // ===============================
   const sendMessage = async (text) => {
     if (!text.trim() || isThinking) return;
-
     if (!datasetUploaded) return;
 
     setInput("");
@@ -94,82 +95,99 @@ export default function Chat() {
     }
   };
 
-  // FILE UPLOAD → AGENT CHART MESSAGE
-
+  // ===============================
+  // FILE UPLOAD → CHARTS → FUZZY
+  // ===============================
   const handleFileUpload = async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+    const file = e.target.files[0];
+    if (!file) return;
 
-  setDatasetUploaded(false);
+    setDatasetUploaded(false);
 
-  setMessages(prev => [
-    ...prev,
-    {
-      sender: "user",
-      type: "text",
-      text: `📎 Uploaded dataset: ${file.name}`
-    }
-  ]);
-
-  try {
-    await uploadDataset(file);
-
+    // User upload message
     setMessages(prev => [
       ...prev,
       {
-        sender: "agent",
+        sender: "user",
         type: "text",
-        text:
-          "✅ Dataset uploaded successfully! Generating insights and charts…"
+        text: `📎 Uploaded dataset: ${file.name}`
       }
     ]);
 
-    setMessages(prev => [
-      ...prev,
-      {
-        sender: "agent",
-        type: "thinking",
-        thinking: true
-      }
-    ]);
+    try {
+      await uploadDataset(file);
 
-    const res = await axios.post(`${API_URL}/chat`, {
-      message: "Show me the overall trends"
-    });
+      // Agent confirmation
+      setMessages(prev => [
+        ...prev,
+        {
+          sender: "agent",
+          type: "text",
+          text:
+            "✅ Dataset uploaded successfully! Generating insights and charts…"
+        }
+      ]);
 
-    setMessages(prev =>
-      prev.map(msg =>
-        msg.thinking
-          ? {
-              sender: "agent",
-              type: "charts",
-              charts: res.data.charts
-            }
-          : msg
-      )
-    );
+      // Agent loading
+      setMessages(prev => [
+        ...prev,
+        {
+          sender: "agent",
+          type: "thinking",
+          thinking: true
+        }
+      ]);
 
-    setDatasetUploaded(true);
-  } catch {
-    setMessages(prev =>
-      prev.map(msg =>
-        msg.thinking
-          ? {
-              sender: "agent",
-              type: "text",
-              text: "❌ Failed to analyze the dataset. Please try again."
-            }
-          : msg
-      )
-    );
-  }
+      // Backend analysis call
+      const res = await axios.post(`${API_URL}/chat`, {
+        message: "Show me the overall trends"
+      });
+     console.log("Defuzz value:", res.data.defuzz_value);
+      // Replace loading → time-series charts
+      setMessages(prev =>
+        prev.map(msg =>
+          msg.thinking
+            ? {
+                sender: "agent",
+                type: "charts",
+                charts: res.data.charts
+              }
+            : msg
+        )
+      );
 
-  e.target.value = null;
-};
+      // 🔥 Add fuzzy logic charts as NEXT agent message
+      setMessages(prev => [
+        ...prev,
+        {
+          sender: "agent",
+          type: "fuzzy",
+          fuzzy: res.data.fuzzy_chart,
+          defuzzValue: Number(res.data.defuzz_value)
+        }
+      ]);
+
+      setDatasetUploaded(true);
+    } catch {
+      setMessages(prev =>
+        prev.map(msg =>
+          msg.thinking
+            ? {
+                sender: "agent",
+                type: "text",
+                text: "❌ Failed to analyze the dataset. Please try again."
+              }
+            : msg
+        )
+      );
+    }
+
+    e.target.value = null;
+  };
 
   return (
     <div className="chat-container">
-      {/* CHAT */}
+      {/* ================= CHAT ================= */}
       <div className="chat-box" ref={chatBoxRef}>
         {messages.map((msg, i) => (
           <div
@@ -178,6 +196,7 @@ export default function Chat() {
               msg.thinking ? "thinking" : "animate-in"
             }`}
           >
+            {/* Loading */}
             {msg.thinking && (
               <div className="skeleton">
                 <div className="skeleton-line short" />
@@ -186,16 +205,42 @@ export default function Chat() {
               </div>
             )}
 
+            {/* Text */}
             {!msg.thinking && msg.type === "text" && msg.text}
 
+            {/* Time-series charts */}
             {!msg.thinking && msg.type === "charts" && (
               <ChatCharts data={msg.charts} />
+            )}
+
+            {/* 🔥 Fuzzy logic charts */}
+            {!msg.thinking && msg.type === "fuzzy" && (
+              <>
+                <FuzzyChart
+                  title="🧠 Rating Membership Function"
+                  {...msg.fuzzy.rating}
+                />
+                <FuzzyChart
+                  title="🌡 Volatility Membership Function"
+                  {...msg.fuzzy.volatility}
+                />
+                <FuzzyChart
+                  title="📦 Order Flow Membership Function"
+                  {...msg.fuzzy.order_flow}
+                />
+                {/* 🔥 DEFUZZIFICATION */}
+                <DefuzzChart
+                  title="📦 Order Flow Defuzzification"
+                  {...msg.fuzzy.order_flow}
+                  crispValue={msg.defuzzValue}
+                />
+              </>
             )}
           </div>
         ))}
       </div>
 
-      {/*  SUGGESTIONS  */}
+      {/* ================= SUGGESTIONS ================= */}
       <div className="suggestions">
         {suggestedQuestions.map((q, i) => (
           <button
@@ -209,7 +254,7 @@ export default function Chat() {
         ))}
       </div>
 
-      {/* INPUT */}
+      {/* ================= INPUT ================= */}
       <div className="chat-input">
         <button
           className="attach-btn"
