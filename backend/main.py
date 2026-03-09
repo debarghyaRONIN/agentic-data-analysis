@@ -9,7 +9,6 @@ from agents.analysis_agent import AnalysisAgent
 from agents.fuzzy_agent import FuzzyPredictionAgent
 from agents.decision_agent import DecisionAgent
 from agents.decision_llm_model import DecisionLLMWrapper
-
 from utils.json_formatter import build_agent_json 
 
 
@@ -45,13 +44,13 @@ OUTPUT_DIR = "outputs"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(OUTPUT_DIR, exist_ok=True) 
 
-# Agents (SINGLETONS)
+# Agents
 analysis_agent = AnalysisAgent()
 fuzzy_agent = FuzzyPredictionAgent()
 decision_agent = DecisionAgent(kb_path="rag/knowledge_base.txt")
 llm_wrapper = DecisionLLMWrapper(model="mistral")
 
-# Upload dataset
+# Dataset
 @app.post("/upload")
 def upload(file: UploadFile = File(...)):
     path = os.path.join(UPLOAD_DIR, file.filename)
@@ -110,9 +109,11 @@ def chat(payload: dict):
 
         # Fuzzy Logic Agent
         fuzzy = fuzzy_agent.predict(
-            rating=float(latest["rating"]),
-            volatility=float(volatility_value),
+          rating=float(latest["rating"]),
+          order_hour=float(latest["order_hour"]),
+          volatility=float(volatility_value)
         )
+
 
         fuzzy_chart = fuzzy_agent.get_membership_charts()
 
@@ -128,7 +129,7 @@ def chat(payload: dict):
             rag_context=rag_context
         )
 
-        # JSON TEMPLATE (NEW, NON-BREAKING)
+        # JSON TEMPLATE
         json_template = build_agent_json(
            query=user_question,
            analysis_summary=summary,
@@ -139,14 +140,14 @@ def chat(payload: dict):
            fuzzy_charts=fuzzy_chart
         )
 
-        # save JSON output for Flutter / audit
+        # JSON output for Flutter
         with open(
             f"{OUTPUT_DIR}/outputs_{json_template['meta']['request_id']}.json",
             "w"
         ) as f:
             json.dump(json_template, f, indent=2)
 
-        # Response (React + Flutter)
+        # Response
         return {
             "reply": llm_text,            
             "charts": charts,

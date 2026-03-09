@@ -18,14 +18,14 @@ export default function ChatCharts({ data }) {
       />
 
      <ChatChart
-  title="⭐ Customer Rating Trend"
+  title="Customer Rating Trend"
   data={data.ratingTrend}
   dataKey="rating"
   yDomain={[3.5, 5]}
 />
 
 <ChatChart
-  title="🔥 Rating Volatility"
+  title="Rating Volatility"
   data={data.volatilityTrend}
   dataKey="volatility"
   yDomain={[0, "auto"]}

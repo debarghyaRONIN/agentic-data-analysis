@@ -4,59 +4,70 @@ from skfuzzy import control as ctrl
 
 
 class FuzzyPredictionAgent:
-    """
-    Predicts ORDER FLOW based on rating and volatility
-    """
 
     def __init__(self):
         self._build_system()
 
     def _build_system(self):
 
-        # -----------------------------
-        # INPUTS (Antecedents)
-        # -----------------------------
+        # INPUTS
         self.rating = ctrl.Antecedent(np.arange(0, 5.1, 0.1), 'rating')
+        self.order_hour = ctrl.Antecedent(np.arange(0, 24, 1), 'order_hour')
         self.volatility = ctrl.Antecedent(np.arange(0, 101, 1), 'volatility')
 
-        # -----------------------------
-        # OUTPUT (Consequent)
-        # -----------------------------
+        # OUTPUT
         self.order_flow = ctrl.Consequent(np.arange(0, 301, 1), 'order_flow')
 
-        # -----------------------------
-        # Membership functions
-        # -----------------------------
+        # RATING MEMBERSHIP
         self.rating['low'] = fuzz.trimf(self.rating.universe, [0, 0, 3])
         self.rating['medium'] = fuzz.trimf(self.rating.universe, [2.5, 3.5, 4.5])
         self.rating['high'] = fuzz.trimf(self.rating.universe, [4, 5, 5])
 
-        self.volatility['low'] = fuzz.trimf(self.volatility.universe, [0, 0, 30])
-        self.volatility['medium'] = fuzz.trimf(self.volatility.universe, [20, 40, 60])
-        self.volatility['high'] = fuzz.trimf(self.volatility.universe, [50, 100, 100])
+        # TIME MEMBERSHIP
+        self.order_hour['morning'] = fuzz.trimf(self.order_hour.universe, [0, 6, 12])
+        self.order_hour['afternoon'] = fuzz.trimf(self.order_hour.universe, [11, 14, 17])
+        self.order_hour['evening'] = fuzz.trimf(self.order_hour.universe, [16, 20, 23])
 
+        # VOLATILITY MEMBERSHIP
+        self.volatility['low'] = fuzz.trimf(self.volatility.universe, [0, 0, 30])
+        self.volatility['medium'] = fuzz.trimf(self.volatility.universe, [20, 50, 70])
+        self.volatility['high'] = fuzz.trimf(self.volatility.universe, [60, 100, 100])
+
+        # ORDER FLOW MEMBERSHIP
         self.order_flow['low'] = fuzz.trimf(self.order_flow.universe, [0, 0, 120])
         self.order_flow['medium'] = fuzz.trimf(self.order_flow.universe, [100, 150, 200])
         self.order_flow['high'] = fuzz.trimf(self.order_flow.universe, [180, 300, 300])
 
-        # -----------------------------
         # RULE BASE
-        # -----------------------------
+
         rules = [
-            ctrl.Rule(self.rating['high'] & self.volatility['low'], self.order_flow['high']),
-            ctrl.Rule(self.rating['medium'] & self.volatility['medium'], self.order_flow['medium']),
-            ctrl.Rule(self.rating['low'] | self.volatility['high'], self.order_flow['low']),
+
+            # Evening peak demand
+            ctrl.Rule(self.rating['high'] & self.order_hour['evening'] & self.volatility['low'], self.order_flow['high']),
+
+            # Afternoon stable demand
+            ctrl.Rule(self.rating['medium'] & self.order_hour['afternoon'] & self.volatility['medium'], self.order_flow['medium']),
+
+            # Morning generally low
+            ctrl.Rule(self.order_hour['morning'], self.order_flow['low']),
+
+            # High volatility reduces flow
+            ctrl.Rule(self.volatility['high'], self.order_flow['low']),
+
+            # Safety rule
+            ctrl.Rule(self.rating['low'], self.order_flow['low'])
         ]
 
         system = ctrl.ControlSystem(rules)
         self.simulator = ctrl.ControlSystemSimulation(system)
 
-    # -----------------------------
     # PREDICTION
-    # -----------------------------
-    def predict(self, rating: float, volatility: float):
+    def predict(self, rating, order_hour, volatility):
+
         self.simulator.input['rating'] = rating
+        self.simulator.input['order_hour'] = order_hour
         self.simulator.input['volatility'] = volatility
+
         self.simulator.compute()
 
         order_flow_value = self.simulator.output['order_flow']
@@ -67,21 +78,13 @@ class FuzzyPredictionAgent:
             "LOW"
         )
 
-        output = {
+        return {
             "predicted_order_flow": round(order_flow_value, 2),
             "order_flow_level": level
         }
 
-        print("🔮 Fuzzy Agent Output:", output)
-        return output
-
-    # -----------------------------
-    # 🔥 NEW: EXPORT MEMBERSHIP FUNCTIONS
-    # -----------------------------
+    # EXPORT MEMBERSHIP CHARTS
     def get_membership_charts(self):
-        """
-        Returns membership functions for frontend visualization
-        """
 
         def extract(variable):
             return {
@@ -94,6 +97,7 @@ class FuzzyPredictionAgent:
 
         return {
             "rating": extract(self.rating),
+            "order_hour": extract(self.order_hour),
             "volatility": extract(self.volatility),
             "order_flow": extract(self.order_flow)
         }

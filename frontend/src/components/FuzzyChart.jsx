@@ -8,26 +8,32 @@ import {
   Legend
 } from "recharts";
 
-export default function FuzzyChart({ title, x, low, medium, high }) {
-  if (!x || !low || !medium || !high) return null;
+export default function FuzzyChart({ title, x, ...memberships }) {
 
-  const data = x.map((val, i) => ({
-    x: val,
-    low: low[i],
-    medium: medium[i],
-    high: high[i]
-  }));
+  if (!x) return null;
+
+  // Convert to chart format
+  const data = x.map((val, i) => {
+    const point = { x: val };
+
+    Object.keys(memberships).forEach(name => {
+      point[name] = memberships[name][i];
+    });
+
+    return point;
+  });
+
+  const colors = [
+    "#22c55e",
+    "#f59e0b",
+    "#ef4444",
+    "#6366f1",
+    "#06b6d4"
+  ];
 
   return (
-    <div style={{
-width: "100%",
-height: 300,
-minHeight: 300,
-marginBottom: 24
-}}>
-      <strong style={{ display: "block", marginBottom: 8 }}>
-        {title}
-      </strong>
+    <div style={{ width: "100%", height: 260, marginBottom: 20 }}>
+      <strong>{title}</strong>
 
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
@@ -36,24 +42,14 @@ marginBottom: 24
           <Tooltip />
           <Legend />
 
-          <Line
-            type="monotone"
-            dataKey="low"
-            stroke="#22c55e"
-            dot={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="medium"
-            stroke="#f59e0b"
-            dot={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="high"
-            stroke="#ef4444"
-            dot={false}
-          />
+          {Object.keys(memberships).map((name, i) => (
+            <Line
+              key={name}
+              dataKey={name}
+              stroke={colors[i % colors.length]}
+              dot={false}
+            />
+          ))}
         </LineChart>
       </ResponsiveContainer>
     </div>

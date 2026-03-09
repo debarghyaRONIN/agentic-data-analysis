@@ -6,7 +6,7 @@ import "./styles/dashboard.css";
 
 export default function App() {
   const [theme, setTheme] = useState("dark");
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   useEffect(() => {
     document.body.setAttribute("data-theme", theme);
@@ -36,9 +36,9 @@ export default function App() {
             <div className="sidebar-section">
               <p className="sidebar-title">Recent Actions</p>
               <ul>
-                <li>📎 Dataset uploaded</li>
-                <li>💬 Asked: Business overview</li>
-                <li>📈 Viewed demand trend</li>
+                <li> Dataset uploaded</li>
+                <li> Asked: Business overview</li>
+                <li> Viewed demand trend</li>
               </ul>
             </div>
 
@@ -58,7 +58,7 @@ export default function App() {
         <div className="header">
           <div>
             <h1>Agentic Data Analysis Assistant</h1>
-            <p>Chat with your data using AI agents</p>
+            <p>Chat with your data using Data Analysis Agents</p>
           </div>
 
           <button

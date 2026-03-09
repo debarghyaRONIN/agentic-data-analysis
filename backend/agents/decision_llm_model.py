@@ -3,10 +3,6 @@ from typing import Dict, List
 
 
 class DecisionLLMWrapper:
-    """
-    Uses a LOCAL LLM (Ollama) to generate a response
-    grounded strictly in agent outputs.
-    """
 
     def __init__(self, model: str = "mistral"):
         self.model = model

@@ -3,10 +3,6 @@ import os
 
 
 class DecisionAgent:
-    """
-    DecisionAgent is responsible ONLY for retrieval (RAG).
-    It loads a knowledge base and returns relevant context.
-    """
 
     def __init__(self, kb_path: str = None):
         if kb_path is None:
@@ -21,8 +17,5 @@ class DecisionAgent:
         self.vector_store = VectorStore(kb_path)
 
     def retrieve_context(self, query: str):
-        """
-        Retrieve relevant historical or business context
-        for the decision process.
-        """
+
         return self.vector_store.retrieve(query)

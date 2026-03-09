@@ -63,7 +63,7 @@ export default function DefuzzChart({
   <Line dataKey="medium" stroke="#f59e0b" dot={false} />
   <Line dataKey="high" stroke="#ef4444" dot={false} />
 
-  {/* 🔥 DEFUZZIFIED CENTROID LINE */}
+  {/* DEFUZZIFIED CENTROID LINE */}
   <ReferenceLine
     x={crispValue}
     stroke="#3b82f6"
