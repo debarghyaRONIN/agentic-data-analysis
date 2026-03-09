@@ -13,20 +13,19 @@ class FuzzyPredictionAgent:
 
     def _build_system(self):
 
-        # -----------------------------
+
         # INPUTS (Antecedents)
-        # -----------------------------
+
         self.rating = ctrl.Antecedent(np.arange(0, 5.1, 0.1), 'rating')
         self.volatility = ctrl.Antecedent(np.arange(0, 101, 1), 'volatility')
 
-        # -----------------------------
+ 
         # OUTPUT (Consequent)
-        # -----------------------------
+
         self.order_flow = ctrl.Consequent(np.arange(0, 301, 1), 'order_flow')
 
-        # -----------------------------
         # Membership functions
-        # -----------------------------
+
         self.rating['low'] = fuzz.trimf(self.rating.universe, [0, 0, 3])
         self.rating['medium'] = fuzz.trimf(self.rating.universe, [2.5, 3.5, 4.5])
         self.rating['high'] = fuzz.trimf(self.rating.universe, [4, 5, 5])
@@ -39,9 +38,9 @@ class FuzzyPredictionAgent:
         self.order_flow['medium'] = fuzz.trimf(self.order_flow.universe, [100, 150, 200])
         self.order_flow['high'] = fuzz.trimf(self.order_flow.universe, [180, 300, 300])
 
-        # -----------------------------
+
         # RULE BASE
-        # -----------------------------
+
         rules = [
             ctrl.Rule(self.rating['high'] & self.volatility['low'], self.order_flow['high']),
             ctrl.Rule(self.rating['medium'] & self.volatility['medium'], self.order_flow['medium']),
@@ -51,9 +50,9 @@ class FuzzyPredictionAgent:
         system = ctrl.ControlSystem(rules)
         self.simulator = ctrl.ControlSystemSimulation(system)
 
-    # -----------------------------
+
     # PREDICTION
-    # -----------------------------
+
     def predict(self, rating: float, volatility: float):
         self.simulator.input['rating'] = rating
         self.simulator.input['volatility'] = volatility
@@ -75,9 +74,9 @@ class FuzzyPredictionAgent:
         print("🔮 Fuzzy Agent Output:", output)
         return output
 
-    # -----------------------------
-    # 🔥 NEW: EXPORT MEMBERSHIP FUNCTIONS
-    # -----------------------------
+
+    #  NEW: EXPORT MEMBERSHIP FUNCTIONS
+
     def get_membership_charts(self):
         """
         Returns membership functions for frontend visualization
